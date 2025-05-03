@@ -18,6 +18,7 @@ Ein einfacher Savegame-Editor für Kingdom Two Crowns, mit dem verschiedene Aspe
 ## Voraussetzungen & Nutzung
 
 - Python 3.6 oder höher
+- 7-Zip (64 Bit) muss installiert sein
 - Nur Norse Lands und Call of Olympus werden derzeit unterstützt (andere DLCs und das Grundspiel aktuell nicht)
 - Kopiere deine `global-v35` Datei aus dem Spielverzeichnis in den Ordner des Editors (z.B. `%AppData%\LocalLow\noio\KingdomTwoCrowns\Release`)
 - Erstelle immer ein Backup deiner `global-v35` Datei, bevor du sie bearbeitest!
