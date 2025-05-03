@@ -1,0 +1,745 @@
+import argparse
+import copy
+import json
+import sys
+import uuid
+
+# Norse Lands Templates
+archer_template = {
+  "name": "Archer_norselands P6 [27]",
+  "parentObject": {
+    "linkedObjectID": ""
+  },
+  "hierarchyPath": "Level/GameLayer/",
+  "prefabPath": "Prefabs/Characters/norselands/Archer_norselands",
+  "uniqueID": "Archer_norselands P6 [27]--37240",
+  "mode": 0,
+  "createOrder": 20539,
+  "linkOrder": 0,
+  "decayHint": 2,
+  "decayResistanceDays": 2,
+  "decayedVersionPrefabPath": "Prefabs/Characters/norselands/Peasant_norselands",
+  "netID": 1086,
+  "crpcType": 1,
+  "localPosition": {
+    "x": 1.0858724117279053,
+    "y": 0.8799997568130493,
+    "z": 0.7576761841773987
+  },
+  "localScale": {
+    "x": 1.0,
+    "y": 1.0,
+    "z": 1.0
+  },
+  "componentData2": [
+    {
+      "name": "Wallet",
+      "type": "WalletData",
+      "data": "{\"coins\":0,\"gems\":0,\"usesCurrencySystem\":true,\"currency\":{\"Coins\":1,\"Gems\":0,\"Crown\":0,\"Skulls\":0,\"Shades\":0,\"Merchandise\":0}}"
+    },
+    {
+      "name": "Character",
+      "type": "CharacterData",
+      "data": "{\"isGrabbed\":false,\"inert\":false}"
+    },
+    {
+      "name": "Archer",
+      "type": "ArcherData",
+      "data": "{\"tower\":{\"linkedObjectID\":\"\"},\"knight\":{\"linkedObjectID\":\"\"},\"guardSide\":1,\"guardDepth\":2,\"despawnOnLoad\":false}"
+    },
+    {
+      "name": "NpcShieldUser",
+      "type": "NpcShieldUserSaveData",
+      "data": "{\"hasShield\":true,\"shieldHp\":3}"
+    },
+    {
+      "name": "Damageable",
+      "type": "DamageableData",
+      "data": "{\"hitPoints\":1,\"invulnerable\":false}"
+    },
+    {
+      "name": "Petrifiable",
+      "type": "PetrifiableSaveData",
+      "data": "{\"RemainingHP\":0,\"IsPetrified\":false,\"RemainingDuration\":-253.03770446777345}"
+    },
+    {
+      "name": "Embarkee",
+      "type": "EmbarkeeSaveData",
+      "data": "{\"IsEmbarked\":false,\"SlotId\":-1,\"Embarkable\":{\"linkedObjectID\":\"\"}}"
+    }
+  ]
+}
+
+worker_template = {
+  "name": "Worker_norselands P4 [68]",
+  "parentObject": {
+    "linkedObjectID": ""
+  },
+  "hierarchyPath": "Level/GameLayer/",
+  "prefabPath": "Prefabs/Characters/norselands/Worker_norselands",
+  "uniqueID": "Worker_norselands P4 [68]--44272",
+  "mode": 0,
+  "createOrder": 20702,
+  "linkOrder": 0,
+  "decayHint": 4,
+  "decayResistanceDays": 1,
+  "decayedVersionPrefabPath": "Prefabs/Characters/norselands/Peasant_norselands",
+  "netID": 1237,
+  "crpcType": 1,
+  "localPosition": {
+    "x": -8.945821762084961,
+    "y": 0.8799997568130493,
+    "z": 0.5088225603103638
+  },
+  "localScale": {
+    "x": -1.0,
+    "y": 1.0,
+    "z": 1.0
+  },
+  "componentData2": [
+    {
+      "name": "Wallet",
+      "type": "WalletData",
+      "data": "{\"coins\":0,\"gems\":0,\"usesCurrencySystem\":true,\"currency\":{\"Coins\":0,\"Gems\":0,\"Crown\":0,\"Skulls\":0,\"Shades\":0,\"Merchandise\":0}}"
+    },
+    {
+      "name": "Character",
+      "type": "CharacterData",
+      "data": "{\"isGrabbed\":false,\"inert\":false}"
+    },
+    {
+      "name": "Worker",
+      "type": "WorkerData",
+      "data": "{\"despawnOnLoad\":false}"
+    },
+    {
+      "name": "Damageable",
+      "type": "DamageableData",
+      "data": "{\"hitPoints\":1,\"invulnerable\":false}"
+    },
+    {
+      "name": "NpcShieldUser",
+      "type": "NpcShieldUserSaveData",
+      "data": "{\"hasShield\":true,\"shieldHp\":4}"
+    },
+    {
+      "name": "Petrifiable",
+      "type": "PetrifiableSaveData",
+      "data": "{\"RemainingHP\":0,\"IsPetrified\":false,\"RemainingDuration\":-253.03770446777345}"
+    },
+    {
+      "name": "Embarkee",
+      "type": "EmbarkeeSaveData",
+      "data": "{\"IsEmbarked\":false,\"SlotId\":-1,\"Embarkable\":{\"linkedObjectID\":\"\"}}"
+    }
+  ]
+}
+
+knight_template = {
+  "name": "Knight_norselands P1 [62]",
+  "parentObject": {
+    "linkedObjectID": ""
+  },
+  "hierarchyPath": "Level/GameLayer/",
+  "prefabPath": "Prefabs/Characters/norselands/Knight_norselands",
+  "uniqueID": "Knight_norselands P1 [62]--42750",
+  "mode": 0,
+  "createOrder": 20680,
+  "linkOrder": 10,
+  "decayHint": 0,
+  "decayResistanceDays": -1,
+  "decayedVersionPrefabPath": "",
+  "netID": 1218,
+  "crpcType": 1,
+  "localPosition": {
+    "x": -14.291994094848633,
+    "y": 0.8799997568130493,
+    "z": 0.45877939462661743
+  },
+  "localScale": {
+    "x": -1.0,
+    "y": 1.0,
+    "z": 1.0
+  },
+  "componentData2": [
+    {
+      "name": "Knight",
+      "type": "KnightData",
+      "data": "{\"side\":-1,\"rank\":1,\"state\":0,\"shieldShop\":{\"linkedObjectID\":\"\"},\"bannerless\":false,\"additionalFollowers\":0,\"despawnOnLoad\":false}"
+    },
+    {
+      "name": "Character",
+      "type": "CharacterData",
+      "data": "{\"isGrabbed\":false,\"inert\":false}"
+    },
+    {
+      "name": "Wallet",
+      "type": "WalletData",
+      "data": "{\"coins\":0,\"gems\":0,\"usesCurrencySystem\":true,\"currency\":{\"Coins\":15,\"Gems\":0,\"Crown\":0,\"Skulls\":0,\"Shades\":0,\"Merchandise\":0}}"
+    },
+    {
+      "name": "Damageable",
+      "type": "DamageableData",
+      "data": "{\"hitPoints\":3,\"invulnerable\":false}"
+    },
+    {
+      "name": "Petrifiable",
+      "type": "PetrifiableSaveData",
+      "data": "{\"RemainingHP\":0,\"IsPetrified\":false,\"RemainingDuration\":-253.03770446777345}"
+    },
+    {
+      "name": "Embarkee",
+      "type": "EmbarkeeSaveData",
+      "data": "{\"IsEmbarked\":false,\"SlotId\":-1,\"Embarkable\":{\"linkedObjectID\":\"\"}}"
+    }
+  ]
+}
+
+# Norse Lands specific enemy types
+enemy_kinds = [
+    "GreedArcher", "GreedKnight", "CrownStealer", "Troll", "Squid", "Boss",
+    "GreedBerserker", "GreedShieldBearer", "Jotnar"  # Norse Lands specific enemies
+]
+
+campaign_index = 1  # Norse Lands is campaign index 1
+max_castle_level = 6
+max_wall_level = 5
+
+_next_net_id = 3000
+def next_net_id():
+    global _next_net_id
+    prev = _next_net_id
+    _next_net_id += 1
+    return prev
+
+_create_order = 30000
+def next_create_order():
+    global _create_order 
+    prev = _create_order
+    _create_order += 1
+    return prev
+
+def make_archer(name, x=0):
+    archer = copy.deepcopy(archer_template)
+    archer["name"] = name
+    archer["uniqueID"] = str(uuid.uuid1())
+    archer["localPosition"]["x"] = x
+    archer["netID"] = next_net_id()
+    archer["createOrder"] = next_create_order()
+    return archer
+
+def make_worker(name, x=0):
+    worker = copy.deepcopy(worker_template)
+    worker["name"] = name
+    worker["uniqueID"] = str(uuid.uuid1())
+    worker["localPosition"]["x"] = x
+    worker["netID"] = next_net_id()
+    worker["createOrder"] = next_create_order()
+    return worker
+
+def make_knight(name, x=0):
+    knight = copy.deepcopy(knight_template)
+    knight["name"] = name
+    knight["uniqueID"] = str(uuid.uuid1())
+    knight["localPosition"]["x"] = x
+    knight["netID"] = next_net_id()
+    knight["createOrder"] = next_create_order()
+    return knight
+
+def init_shop(shop_kind, objects):
+    identifier = None
+    if shop_kind == "bow":
+        identifier = "ShopBow"
+    elif shop_kind == "hammer":
+        identifier = "ShopHammer"
+    elif shop_kind == "scythe":
+        identifier = "ShopScythe"
+    else:
+        assert 0, f"init_shop: unknown shop_kind: {shop_kind}"
+
+    shop = obj_by_name_contains(objects, f"{identifier} Placeholder")
+    if shop != None:
+        net_id = next_net_id()
+        shop["name"] = f"{identifier}_norselands(Clone)"
+        shop["uniqueID"] = str(uuid.uuid1())
+        shop["prefabPath"] = f"Prefabs/Buildings and Interactive/norselands/{identifier}_norselands"
+        shop["netID"] = net_id
+        # shop["crpcType"] = 2
+        # shop["componentData2"] = [ { "name": "PayableShop", "type": "PayableShopData", "data": "{\"items\":[]}" }, { "name": "WorkableBuilding", "type": "WorkableBuildingData", "data": "{\"currentBuildPoints\":0.0,\"usesConstructionBuildingComponent\":true}" }, { "name": "CRPCStamp", "type": "CRPCSaveData", "data": f'{{\"NetID\":{net_id},\"SemiStatic\":true}}' }, { "name": "ConstructionBuildingComponent", "type": "ConstructionBuildingComponentSaveData", "data": "{\"CurrentBuildPoints\":4.0}" }, { "name": "PersistentRouter", "type": "GenderSelectorSaveData", "data": "{\"IsFemale\":false}" } ]
+
+        print(f"initializing {shop_kind} shop")
+    else:
+        print(f"no placeholder {shop_kind} shop found")
+
+
+def upgrade_castle(obj, level):
+    global max_castle_level
+    level = min(level, max_castle_level)
+    obj["name"] = f"Castle{level}_norselands(Clone)"
+    obj["uniqueID"] = str(uuid.uuid1())
+    obj["prefabPath"] = f"Prefabs/Buildings and Interactive/norselands/Castle{level}_norselands"
+    if not obj_has_component(obj, "Castle"):
+        obj["componentData2"].append({"name":"Castle","type":"CastleData","data":"{}"})
+    if not obj_has_component(obj, "GhostHintTrigger"):
+        obj["componentData2"].append({"name":"GhostHintTrigger","type":"GhostHintTriggerData","data":"{\"IsGhostHintEnabled\":true,\"hintDataPath\":\"UpgradeTheCastle1\"}"})
+
+def upgrade_walls(objects, level):
+    global max_wall_level
+    level = min(level, max_wall_level)
+    for obj in objects:
+        if "Wall0" in obj["name"]:
+            obj["name"] = f"Wall{level}_norselands(Clone)"
+            obj["uniqueID"] = str(uuid.uuid1())
+            obj["prefabPath"] = f"Prefabs/Buildings and Interactive/norselands/Wall{level}_norselands"
+            obj["decayedVersionPrefabPath"] = f"Prefabs/Buildings and Interactive/norselands/Wall{level} Wreck_norselands"
+            # make two workers to build each wall
+            for i in range(2):
+                worker = make_worker("pimp my walls worker", x=obj["localPosition"]["x"])
+                objects.append(worker)
+
+def mark_trees(objects):
+    for obj in objects:
+        if obj_has_component(obj, "WorkableTree"):
+            mark_tree(obj)
+
+def player_set_formation_active(obj, val):
+    for comp in obj["componentData2"]:
+        if comp["name"] == "Player":
+            data = json.loads(comp["data"])
+            data["isFormationActive"] = val
+            comp["data"] = json.dumps(data)
+
+def obj_set_crpc_stamp_net_id(obj, val):
+    for comp in obj["componentData2"]:
+        if comp["name"] == "CRPCStamp":
+            data = json.loads(comp["data"])
+            data["NetID"] = val
+            comp["data"] = json.dumps(data)
+
+def obj_set_hp(obj, val):
+    for comp in obj["componentData2"]:
+        if comp["name"] == "Damageable":
+            data = json.loads(comp["data"])
+            data["hitPoints"] = val
+            comp["data"] = json.dumps(data)
+
+def obj_set_coins(obj, val):
+    for comp in obj["componentData2"]:
+        if comp["name"] == "Wallet":
+            data = json.loads(comp["data"])
+            data["usesCurrencySystem"] = True
+            data["currency"]["Coins"] = val
+            comp["data"] = json.dumps(data)
+
+def mark_tree(obj):
+    for comp in obj["componentData2"]:
+        if comp["name"] == "WorkableTree":
+            data = json.loads(comp["data"])
+            data["marked"] = True
+            comp["data"] = json.dumps(data)
+
+def obj_has_component(obj, comp_name):
+    for comp in obj["componentData2"]:
+        if comp["name"] == comp_name:
+            return True
+    return False
+
+def find_all_with_component(objects, comp_name):
+    results = []
+    for obj in objects:
+        if obj_has_component(obj, comp_name):
+            results.append(obj)
+    return results
+
+def obj_by_name(objects, name):
+    for obj in objects:
+        if obj["name"] == name:
+            return obj
+    return None
+
+def obj_by_name_contains(objects, substr):
+    for obj in objects:
+        if substr in obj["name"]:
+            return obj
+    return None
+
+def parse_json_file(filepath):
+    with open(filepath, "r") as f:
+        doc = json.load(f)
+    return doc
+
+# for use in python interpreter for easily playing around
+def get_island_data(filepath, island):
+    doc = parse_json_file(filepath)
+    global campaign_index
+    return doc["campaigns"][campaign_index]["_islands"][island]
+
+
+def print_objs_between(objects, a, b):
+    ignore = ["Grass", "Tree", "Shrub", "Snow", "Cloud", "Moss", "OracleHintText"]
+    for obj in objects:
+        x = obj["localPosition"]["x"] 
+        if x >= a and x <= b:
+            skip = False
+            for s in ignore:
+                if s in obj["name"]:
+                    skip = True
+            if not skip:
+                print(f'{obj["name"]} at x={x}')
+
+
+
+# remove all non trigger portals, move to trigger portal with archer, worker, and idol
+def action_take_over(doc, island):
+    global campaign_index
+    campaign = doc["campaigns"][campaign_index]
+    land = campaign["_islands"][island]
+    objects = land["objects"]
+
+    print(f"Land {island} has {len(objects)} objects")
+
+    portal_x = 0
+    new_objects = []
+
+    for obj in objects:
+        if obj_has_component(obj, "Portal"):
+            if obj_has_component(obj, "QuestTransitionTrigger"):
+                obj_set_hp(obj, 1)
+                portal_x = obj["localPosition"]["x"]
+                new_objects.append(obj)
+        else:
+            new_objects.append(obj)
+
+    print(f"After taking over there are {len(new_objects)} objects")
+
+    campaign["currentReign"]["landData"][island]["portals"] = 1
+
+    # set player position and activate formation
+    target_x = portal_x - 3 if portal_x > 0 else portal_x + 3
+    player1 = obj_by_name(objects, "Player 1")
+    player1["localPosition"]["x"] = target_x
+    player_set_formation_active(player1, True)
+    obj_set_coins(player1, 69)
+
+    # set squad position to portal position
+    idol = obj_by_name_contains(objects, "Idol")
+    if idol:
+        idol["localPosition"]["x"] = portal_x
+    else:
+        print(f"warning: no idol found on island {island}")
+
+    archer = make_archer("Steve", x=target_x)
+    new_objects.append(archer)
+    worker = make_worker("Joey", x=target_x)
+    new_objects.append(worker)
+
+    land["objects"] = new_objects
+    
+    outfile = f"takeover_{island}.json"
+    with open(outfile, "w") as f:
+        json.dump(doc, f)
+    print(f"save file written to {outfile}")
+
+
+# destroy all portals
+def action_destroy(doc, island):
+    global campaign_index
+    campaign = doc["campaigns"][campaign_index]
+    land = campaign["_islands"][island]
+    objects = land["objects"]
+
+    print(f"Land {island} has {len(objects)} objects")
+
+    new_objects = [obj for obj in objects if not obj_has_component(obj, "Portal")]
+
+    campaign["currentReign"]["landData"][island]["portals"] = 0
+    land["objects"] = new_objects
+
+    print(f"After destroying there are {len(new_objects)} objects")
+    
+    outfile = f"destroy_{island}.json"
+    with open(outfile, "w") as f:
+        json.dump(doc, f)
+    print(f"save file written to {outfile}")
+
+
+# kill all enemies
+def action_exterminate(doc, island):
+    global campaign_index
+    campaign = doc["campaigns"][campaign_index]
+    land = campaign["_islands"][island]
+    objects = land["objects"]
+
+    print(f"Land {island} has {len(objects)} objects")
+
+    new_objects = []
+
+    for obj in objects:
+        keep = True
+        for kind in enemy_kinds:
+            if obj_has_component(obj, kind):
+                keep = False
+                break
+        if keep:
+            new_objects.append(obj)
+
+    land["objects"] = new_objects
+
+    print(f"After extermination there are {len(new_objects)} objects")
+    
+    outfile = f"exterminate_{island}.json"
+    with open(outfile, "w") as f:
+        json.dump(doc, f)
+    print(f"save file written to {outfile}")
+
+
+# teleport to a position with a squad for battle
+def action_formation(doc, island, x):
+    global campaign_index
+    campaign = doc["campaigns"][campaign_index]
+    land = campaign["_islands"][island]
+    objects = land["objects"]
+
+    print(f"Land {island} has {len(objects)} objects")
+
+    player1 = obj_by_name(objects, "Player 1")
+    player1["localPosition"]["x"] = x
+    player_set_formation_active(player1, True)
+
+    for i in range(5):
+        objects.append(make_archer(f"Formation Archer {i}", x))
+        objects.append(make_knight(f"Formation Knight {i}", x))
+
+    print(f"After formation mode there are {len(objects)} objects")
+    
+    outfile = f"formation_{island}.json"
+    with open(outfile, "w") as f:
+        json.dump(doc, f)
+    print(f"save file written to {outfile}")
+
+
+# upgrade land to maximum pimpage level
+def action_pimp(doc, island):
+    global campaign_index
+    campaign = doc["campaigns"][campaign_index]
+    land = campaign["_islands"][island]
+    objects = land["objects"]
+
+    player1 = obj_by_name(objects, "Player 1");
+    player1["localPosition"]["x"] = 0
+    obj_set_coins(player1, 69)
+
+    castle = obj_by_name_contains(objects, "Castle")
+
+    if castle and "Castle0" in castle["name"]:
+        init_shop("bow", objects)
+        init_shop("hammer", objects)
+        init_shop("scythe", objects)
+
+        # upgrade castle
+        global max_castle_level
+        upgrade_castle(castle, max_castle_level)
+        print(f"castle upgraded to level {max_castle_level}")
+
+        # upgrade walls
+        global max_wall_level
+        upgrade_walls(objects, max_wall_level)
+
+    # mark all trees for removal
+    mark_trees(objects)
+
+    # spawn some bros
+    spawn_count = 10
+    for i in range(spawn_count):
+        archer = make_archer(f"Shooty Boy {i}")
+        objects.append(archer)
+        worker = make_worker(f"Good Ole Boy {i}")
+        objects.append(worker)
+        knight = make_knight(f"Knight Boy {i}")
+        objects.append(knight)
+
+    print(f"pimped out island {island}")
+    outfile = f"pimp_{island}.json"
+    with open(outfile, "w") as f:
+        json.dump(doc, f)
+    print(f"save file written to {outfile}")
+
+
+def action_spawn(doc, island, num_archers, num_workers, num_knights):
+    global campaign_index
+    campaign = doc["campaigns"][campaign_index]
+    land = campaign["_islands"][island]
+    objects = land["objects"]
+
+    print(f"Land {island} has {len(objects)} objects")
+
+    player1 = obj_by_name(objects, "Player 1")
+    player_x = player1["localPosition"]["x"]
+
+    if num_archers > 0 or num_knights > 0:
+        player_set_formation_active(player1, True)
+
+    for i in range(num_archers):
+        archer = make_archer(f"Shooty Boy {i}", x=player_x)
+        objects.append(archer)
+
+    for i in range(num_workers):
+        worker = make_worker(f"Good Ole Boy {i}", x=player_x)
+        objects.append(worker)
+
+    for i in range(num_knights):
+        knight = make_knight(f"Knight Boy {i}", x=player_x)
+        objects.append(knight)
+
+    print(f"After spawn there are {len(objects)} objects")
+
+    outfile = f"spawn_{island}.json"
+    with open(outfile, "w") as f:
+        json.dump(doc, f)
+    print(f"save file written to {outfile}")
+
+# mark all trees for removal
+def action_trees(doc, island):
+    global campaign_index
+    campaign = doc["campaigns"][campaign_index]
+    land = campaign["_islands"][island]
+    objects = land["objects"]
+
+    print("marking trees for removal")
+    mark_trees(objects)
+
+    player1 = obj_by_name(objects, "Player 1")
+    obj_set_coins(player1, 69)
+
+    outfile = f"trees_{island}.json"
+    with open(outfile, "w") as f:
+        json.dump(doc, f)
+    print(f"save file written to {outfile}")
+
+# edit player currency
+def action_edit_currency(doc, island, player_index, amount):
+    global campaign_index
+    campaign = doc["campaigns"][campaign_index]
+    
+    # Check if we need to access monarchy characters (in-game) or carryForward (between islands)
+    if "_islands" in campaign and len(campaign["_islands"]) > island:
+        # In-game currency edit
+        land = campaign["_islands"][island]
+        if "monarchy" in land and "characters" in land["monarchy"] and len(land["monarchy"]["characters"]) > player_index:
+            character = land["monarchy"]["characters"][player_index]
+            if "currency" in character:
+                character["currency"] = amount
+                print(f"Set in-game currency for player {player_index+1} to {amount}")
+            else:
+                print(f"Character has no currency field")
+        else:
+            # Try to find the player object and set coins
+            objects = land["objects"]
+            player = obj_by_name(objects, f"Player {player_index+1}")
+            if player:
+                obj_set_coins(player, amount)
+                print(f"Set coins for Player {player_index+1} to {amount}")
+            else:
+                print(f"Player {player_index+1} not found on island {island}")
+    
+    # Also update carryForward for between islands
+    if "carryForward" in campaign:
+        carry = campaign["carryForward"]
+        if player_index == 0 and "currencyP1" in carry:
+            carry["currencyP1"]["Coins"] = amount
+            print(f"Set carryForward coins for Player 1 to {amount}")
+        elif player_index == 1 and "currencyP2" in carry:
+            carry["currencyP2"]["Coins"] = amount
+            print(f"Set carryForward coins for Player 2 to {amount}")
+    
+    outfile = f"currency_{island}_p{player_index+1}.json"
+    with open(outfile, "w") as f:
+        json.dump(doc, f)
+    print(f"Save file written to {outfile}")
+
+def action_goto(doc, island):
+    global campaign_index
+    campaign = doc["campaigns"][campaign_index]
+
+    campaign["PreviousLand"] = campaign["currentLand"]
+    campaign["currentLand"] = island
+
+    reign = campaign["currentReign"]
+    reign["currentLand"] = island
+
+    carry = campaign["carryForward"]
+    carry["present"] = True
+    carry["usesCurrencySystem"] = True
+    carry["currencyP1"]["Coins"] = 69
+    carry["currencyP1"]["Gems"] = 3
+    carry["currencyP1"]["Crown"] = 1
+    # Norse Lands uses knights instead of pikemen
+    carry["numKnights"] = 4
+    carry["numFarmers"] = 4
+    carry["numFleetBoats"] = 4
+
+    outfile = f"goto_{island}.json"
+    with open(outfile, "w") as f:
+        json.dump(doc, f)
+    print(f"save file written to {outfile}")
+
+
+def probe():
+    land = get_island_data("save_34.json", 8)
+    print_objs_between(land["objects"], -5, 5)
+
+if __name__ == "__main__":
+    # probe()
+    # sys.exit(0)
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("save_file", help="path to a save file in json format")
+    parser.add_argument("-i", "--island", type=int, help="which island to affect")
+
+    subparsers = parser.add_subparsers(dest="action", help="subcommand help")
+    subparsers.add_parser("goto", help="goto island -i, with money and crew")
+    subparsers.add_parser("take_over", help="destroy all non trigger portals, move to trigger portal with archer, worker, and idol")
+    subparsers.add_parser("destroy", help="destroy all portals")
+    subparsers.add_parser("exterminate", help="kill all enemies")
+    subparsers.add_parser("pimp", help="upgrade land's castle to max")
+    subparsers.add_parser("trees", help="mark all trees for removal")
+
+    formation_parser = subparsers.add_parser("formation", help="teleport to a position with a squad for battle")
+    formation_parser.add_argument("-x", "--position", type=int, help="x position")
+
+    spawn_parser = subparsers.add_parser("spawn", help="spawn characters like archers or workers")
+    spawn_parser.add_argument("-a", "--archers", type=int, default=0, help="how many archers to spawn")
+    spawn_parser.add_argument("-w", "--workers", type=int, default=0, help="how many workers to spawn")
+    spawn_parser.add_argument("-k", "--knights", type=int, default=0, help="how many knights to spawn")
+    
+    currency_parser = subparsers.add_parser("edit_currency", help="edit player's currency")
+    currency_parser.add_argument("-p", "--player", type=int, default=0, help="player index (0 for player 1, 1 for player 2)")
+    currency_parser.add_argument("-c", "--coins", type=int, required=True, help="amount of coins to set")
+
+    args = parser.parse_args()
+
+    doc = parse_json_file(args.save_file)
+
+    if args.action == "goto":
+        action_goto(doc, args.island)
+    elif args.action == "take_over":
+        action_take_over(doc, args.island)
+    elif args.action == "destroy":
+        action_destroy(doc, args.island)
+    elif args.action == "exterminate":
+        action_exterminate(doc, args.island)
+    elif args.action == "formation":
+        if args.position != None:
+            action_formation(doc, args.island, args.position)
+        else:
+            print("you must specify an x position with the formation action (-x, --position-x)")
+            sys.exit(1)
+    elif args.action == "spawn":
+        action_spawn(doc, args.island, args.archers, args.workers, args.knights)
+    elif args.action == "pimp":
+        action_pimp(doc, args.island)
+    elif args.action == "trees":
+        action_trees(doc, args.island)
+    elif args.action == "edit_currency":
+        action_edit_currency(doc, args.island, args.player, args.coins)
